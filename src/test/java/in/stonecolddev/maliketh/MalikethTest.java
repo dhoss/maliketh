@@ -1,4 +1,4 @@
-package in.stonecolddev;
+package in.stonecolddev.maliketh;
 
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;

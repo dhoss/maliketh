@@ -1,4 +1,4 @@
-package in.stonecolddev;
+package in.stonecolddev.maliketh;
 
 import io.micronaut.runtime.Micronaut;
 
