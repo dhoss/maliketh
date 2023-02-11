@@ -1,7 +1,5 @@
 package in.stonecolddev.maliketh.cms.api.entry;
 
-import in.stonecolddev.maliketh.cms.api.entry.Entry;
-import in.stonecolddev.maliketh.cms.api.entry.User;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

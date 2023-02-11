@@ -15,5 +15,4 @@ public record Tag(
   String name,
   OffsetDateTime created,
   OffsetDateTime updated
-) implements TagBuilder.With {
-}
+) implements TagBuilder.With {}

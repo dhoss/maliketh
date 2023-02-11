@@ -18,11 +18,4 @@ public record User(
   Set<Entry> entries,
   OffsetDateTime created,
   OffsetDateTime updated
-) implements UserBuilder.With {
-
-  public Set<Entry> addEntry(Entry entry) {
-    this.entries.add(entry);
-
-    return this.entries();
-  }
-}
+) implements UserBuilder.With {}
