@@ -1,7 +1,6 @@
 package in.stonecolddev.maliketh.cms.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
-import in.stonecolddev.maliketh.cms.repository.Repository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @Profile({"local", "unit-test", "it-test", "dev", "prod"})
-@EnableJdbcRepositories(basePackageClasses = { Repository.class })
+//@EnableJdbcRepositories//(basePackageClasses = { Repository.class })
 public class Database  {
 
   @Bean

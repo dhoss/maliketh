@@ -7,20 +7,13 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
-@Table("entries")
+@Table("categories")
 @RecordBuilder
-public record Entry(
+public record Category(
   @Id
   Integer id,
-  String title,
-  String slug,
-  Integer authorId,
-  Integer version,
-  Type type,
-  String body,
-  Set<Tag> tags,
-  Integer categoryId,
-  Boolean published,
+  String name,
+  Set<Entry> entries,
   OffsetDateTime created,
   OffsetDateTime updated
-) implements EntryBuilder.With { }
+) {}

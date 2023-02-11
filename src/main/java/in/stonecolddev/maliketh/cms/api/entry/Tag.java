@@ -5,22 +5,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.OffsetDateTime;
-import java.util.Set;
 
-@Table("entries")
+@Table("tags")
 @RecordBuilder
-public record Entry(
+public record Tag(
   @Id
   Integer id,
-  String title,
-  String slug,
-  Integer authorId,
-  Integer version,
-  Type type,
-  String body,
-  Set<Tag> tags,
-  Integer categoryId,
-  Boolean published,
+  Integer entryId,
+  String name,
   OffsetDateTime created,
   OffsetDateTime updated
-) implements EntryBuilder.With { }
+) implements TagBuilder.With {
+}

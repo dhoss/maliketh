@@ -7,20 +7,22 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
-@Table("entries")
+@Table("users")
 @RecordBuilder
-public record Entry(
+public record User(
   @Id
   Integer id,
-  String title,
-  String slug,
-  Integer authorId,
-  Integer version,
-  Type type,
-  String body,
-  Set<Tag> tags,
-  Integer categoryId,
-  Boolean published,
+  String name,
+  String userName,
+  String email,
+  Set<Entry> entries,
   OffsetDateTime created,
   OffsetDateTime updated
-) implements EntryBuilder.With { }
+) implements UserBuilder.With {
+
+  public Set<Entry> addEntry(Entry entry) {
+    this.entries.add(entry);
+
+    return this.entries();
+  }
+}
