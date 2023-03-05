@@ -1,5 +1,7 @@
-package in.stonecolddev.maliketh.cms.api.entry;
+package in.stonecolddev.maliketh.cms.api.user;
 
+import in.stonecolddev.maliketh.cms.api.entry.Entry;
+import in.stonecolddev.maliketh.cms.api.entry.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
