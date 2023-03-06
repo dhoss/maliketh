@@ -10,3 +10,8 @@ spring:
       pool-name: maliketh-pool
       username: maliketh
       password: maliketh
+
+logging:
+  level:
+    in.stonecolddev: DEBUG
+    org.springframework.jdbc.core: TRACE

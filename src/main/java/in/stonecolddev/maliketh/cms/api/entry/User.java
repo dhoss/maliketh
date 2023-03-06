@@ -15,7 +15,8 @@ public record User(
   String name,
   String userName,
   String email,
-  Set<Entry> entries,
+ // TODO: create custom resultset for retrieving a user's entries
+ // Set<Entry> entries,
   OffsetDateTime created,
   OffsetDateTime updated
 ) implements UserBuilder.With {}

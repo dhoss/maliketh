@@ -5,9 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -24,9 +22,16 @@ public class EntryController {
   }
 
 
+  // TODO: pagination
   @GetMapping("")
   public HttpEntity<Set<Entry>> all() {
     return ResponseEntity.ok(entryService.all());
+  }
+
+  @PostMapping("")
+  public HttpEntity<Entry> create(@RequestBody CreateEntryRequest entry) {
+    log.debug("**** REQAUEST {}", entry);
+    return ResponseEntity.ok(entryService.create(entry));
   }
 
 

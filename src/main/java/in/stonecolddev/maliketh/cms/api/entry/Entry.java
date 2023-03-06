@@ -19,10 +19,9 @@ public record Entry(
   Integer authorId,
   Integer version,
   @Column("entry_types_id")
-  Type type,
+  Integer typeId,
   String body,
-  Set<Tag> tags,
-
+  Set<String> tags,
   @Column("categories_id")
   Integer categoryId,
   Boolean published,

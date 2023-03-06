@@ -20,6 +20,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>com.github.slugify</groupId>
+			<artifactId>slugify</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+		<dependency>
 			<groupId>io.soabase.record-builder</groupId>
 			<artifactId>record-builder-core</artifactId>
 			<version>${record-builder.version}</version>
