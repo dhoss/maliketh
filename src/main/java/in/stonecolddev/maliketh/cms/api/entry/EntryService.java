@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Service
@@ -46,27 +47,27 @@ public class EntryService {
   }
 
   public Entry create(CreateEntryRequest createEntryRequest) {
-
-    log.debug("**** RETRIEVING AUTHOR ID");
-    var authorId = userRepository.findByUserName(createEntryRequest.author())
-                         .map(User::id)
-                         .orElseThrow();
-    log.debug("**** AUTHOR ID :{}", authorId);
     log.info("Creating new entry: {}", createEntryRequest);
     return entryRepository.save(
       EntryBuilder.builder()
         .title(createEntryRequest.title())
         .slug(slug.slugify(createEntryRequest.title()))
         .authorId(
-          authorId
-        )
+          userRepository.findByUserName(createEntryRequest.author())
+                               .map(User::id)
+                               .orElseThrow())
         .typeId(
           entryTypeRepository.findByName(createEntryRequest.type())
             .map(Type::id)
             .orElseThrow())
         .body(createEntryRequest.body())
         .tags(createEntryRequest.tags())
-        .categoryId(categoryRepository.findByName(createEntryRequest.category()).map(Category::id).orElseThrow())
+        .categoryId(
+          categoryRepository.findByName(createEntryRequest.category())
+            .map(Category::id)
+            .orElseThrow())
+        .published(createEntryRequest.published())
+        .created(OffsetDateTime.now())
         .build());
   }
 }
