@@ -1,4 +1,4 @@
-package in.stonecolddev.maliketh.cms.api.user;
+package in.stonecolddev.maliketh.cms.api.entry;
 
 import in.stonecolddev.maliketh.cms.api.entry.Type;
 import org.springframework.data.jdbc.repository.query.Query;
