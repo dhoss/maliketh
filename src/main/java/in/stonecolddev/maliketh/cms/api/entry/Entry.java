@@ -15,15 +15,12 @@ public record Entry(
   Integer id,
   String title,
   String slug,
-  @Column("users_id")
-  Integer authorId,
+  User author,
   Integer version,
-  @Column("entry_types_id")
-  Integer typeId,
+  Type type,
   String body,
   Set<String> tags,
-  @Column("categories_id")
-  Integer categoryId,
+  Category category,
   Boolean published,
   OffsetDateTime created,
   OffsetDateTime updated

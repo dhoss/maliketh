@@ -14,7 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @Profile({"local", "unit-test", "it-test", "dev", "prod"})
-public class Database  {
+public class DatabaseConfiguration {
 
   @Bean
   public NamedParameterJdbcOperations operations() {

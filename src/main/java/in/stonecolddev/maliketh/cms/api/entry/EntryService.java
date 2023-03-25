@@ -45,25 +45,24 @@ public class EntryService {
 
   public Entry create(CreateEntryRequest createEntryRequest) {
     log.info("Creating new entry: {}", createEntryRequest);
-    // TODO: refactor with modelmapper
     return entryRepository.save(
       EntryBuilder.builder()
         .title(createEntryRequest.title())
         .slug(slug.slugify(createEntryRequest.title()))
-        .authorId(
-          userRepository.findByUserName(createEntryRequest.author())
-                               .map(User::id)
-                               .orElseThrow())
-        .typeId(
-          entryTypeRepository.findByName(createEntryRequest.type())
-            .map(Type::id)
-            .orElseThrow())
+       // .authorId(
+       //   userRepository.findByUserName(createEntryRequest.author())
+       //                        .map(User::id)
+       //                        .orElseThrow())
+       // .typeId(
+       //   entryTypeRepository.findByName(createEntryRequest.type())
+       //     .map(Type::id)
+       //     .orElseThrow())
         .body(createEntryRequest.body())
         .tags(createEntryRequest.tags())
-        .categoryId(
-          categoryRepository.findByName(createEntryRequest.category())
-            .map(Category::id)
-            .orElseThrow())
+       // .categoryId(
+       //   categoryRepository.findByName(createEntryRequest.category())
+       //     .map(Category::id)
+       //     .orElseThrow())
         .published(createEntryRequest.published())
         .created(OffsetDateTime.now())
         .build());
