@@ -45,6 +45,7 @@ public class EntryService {
 
   public Entry create(CreateEntryRequest createEntryRequest) {
     log.info("Creating new entry: {}", createEntryRequest);
+    // TODO: refactor with modelmapper
     return entryRepository.save(
       EntryBuilder.builder()
         .title(createEntryRequest.title())
