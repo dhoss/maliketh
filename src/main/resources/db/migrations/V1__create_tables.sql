@@ -1,4 +1,4 @@
-create table users (
+create table users(
   id integer not null generated always as identity primary key,
   name varchar,
   user_name varchar not null unique,

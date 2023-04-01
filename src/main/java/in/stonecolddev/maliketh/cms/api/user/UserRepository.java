@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-  @Query("select * from entries where authorId = :authorId")
+  @Query("select * from entries where author_id = :authorId")
   Set<Entry> entries(@Param("authorId") Integer authorId);
 
   @Query(

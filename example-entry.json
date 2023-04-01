@@ -1,0 +1,15 @@
+{
+  "title": "test entry 4",
+  "author": {
+    "userName": "dja"
+  },
+  "type": {
+    "name": "post"
+  },
+  "body": "test post",
+  "category": {
+    "name": "tech"
+  },
+  "published": false,
+  "tags": ["test", "entry"]
+}

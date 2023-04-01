@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Service
@@ -43,29 +42,25 @@ public class EntryService {
     return entryRepository.all();
   }
 
-  public Entry create(CreateEntryRequest createEntryRequest) {
-    log.info("Creating new entry: {}", createEntryRequest);
-    return entryRepository.save(
-      EntryBuilder.builder()
-        .title(createEntryRequest.title())
-        .slug(slug.slugify(createEntryRequest.title()))
-       // .authorId(
-       //   userRepository.findByUserName(createEntryRequest.author())
-       //                        .map(User::id)
-       //                        .orElseThrow())
-       // .typeId(
-       //   entryTypeRepository.findByName(createEntryRequest.type())
-       //     .map(Type::id)
-       //     .orElseThrow())
-        .body(createEntryRequest.body())
-        .tags(createEntryRequest.tags())
-       // .categoryId(
-       //   categoryRepository.findByName(createEntryRequest.category())
-       //     .map(Category::id)
-       //     .orElseThrow())
-        .published(createEntryRequest.published())
-        .created(OffsetDateTime.now())
-        .build());
+  public Entry create(Entry entry) {
+    log.info("Creating new entry: {}", entry);
+    entryRepository.insert(
+      entry.title(),
+      entry.body(),
+      slug.slugify(entry.title()),
+      userRepository.findByUserName(entry.author().userName())
+        .map(User::id)
+        .orElseThrow(),
+      1,
+      entryTypeRepository.findByName(entry.type().name())
+        .map(Type::id)
+        .orElseThrow(),
+      entry.tags().toArray(String[]::new),
+      categoryRepository.findByName(entry.category().name())
+        .map(Category::id)
+        .orElseThrow(),
+      entry.published());
+    return entry;
   }
 
   public Entry findOne(Integer year, Integer month, Integer day, String slug) {
