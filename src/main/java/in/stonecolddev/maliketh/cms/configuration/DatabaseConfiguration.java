@@ -13,7 +13,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@Profile({"local", "unit-test", "it-test", "dev", "prod"})
+@Profile({"local", "local-docker", "unit-test", "it-test", "dev", "prod"})
 public class DatabaseConfiguration {
 
   @Bean
