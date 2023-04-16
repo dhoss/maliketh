@@ -34,10 +34,6 @@ public class EntryController {
     return ResponseEntity.ok(entryService.create(entry));
   }
 
- // @PostMapping("")
- // public HttpEntity<Entry> create(@RequestBody CreateEntryRequest entry) {
- //   return ResponseEntity.ok(entryService.create(entry));
- // }
   @GetMapping("/{year}/{month}/{day}/{slug}")
   public HttpEntity<Entry> find(
     @PathVariable Integer year,

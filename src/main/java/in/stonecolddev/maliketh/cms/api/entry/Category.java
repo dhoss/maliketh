@@ -13,8 +13,8 @@ public record Category(
   @Id
   Integer id,
   String name,
-  // TODO:  create resultset for joining related entries
-  //Set<Entry> entries,
+  String slug,
+  Set<Entry> entries,
   OffsetDateTime created,
   OffsetDateTime updated
 ) {}

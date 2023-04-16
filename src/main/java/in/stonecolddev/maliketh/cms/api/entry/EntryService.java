@@ -56,7 +56,7 @@ public class EntryService {
         .map(Type::id)
         .orElseThrow(),
       entry.tags().toArray(String[]::new),
-      categoryRepository.findByName(entry.category().name())
+      categoryRepository.findBySlug(entry.category().name())
         .map(Category::id)
         .orElseThrow(),
       entry.published());
@@ -77,5 +77,10 @@ public class EntryService {
 
   public Set<Entry> findForDay(Integer year, Integer month, Integer day) {
     return entryRepository.findForDay(year, month, day);
+  }
+
+  // TODO: move this to category service
+  public Set<Entry> findCategory(String slug) {
+    return categoryRepository.categoryEntries(slug);//.orElseThrow();
   }
 }

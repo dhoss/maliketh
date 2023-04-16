@@ -17,6 +17,7 @@ create table entry_types(
 create table categories(
   id integer not null generated always as identity primary key,
   name varchar not null unique,
+  slug varchar not null unique,
   created timestamptz,
   updated timestamptz default now()
 );
