@@ -5,6 +5,7 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public interface EntryRepository extends Repository<Entry, Integer> {
     @Param("entry_types_id") Integer typeId,
     @Param("tags") String[] tags,
     @Param("categories_id") Integer categoryId,
-    @Param("published") Boolean published
+    @Param("published") OffsetDateTime published
   );
 
   // TODO: paginate

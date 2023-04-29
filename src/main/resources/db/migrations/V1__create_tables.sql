@@ -32,7 +32,7 @@ create table entries(
   body varchar not null,
   tags varchar[],
   categories_id integer not null references categories(id),
-  published boolean default false,
+  published timestamptz,
   created timestamptz,
   updated timestamptz default now()
 );

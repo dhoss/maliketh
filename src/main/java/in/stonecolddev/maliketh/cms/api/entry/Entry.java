@@ -20,7 +20,7 @@ public record Entry(
   String body,
   Set<String> tags,
   Category category,
-  Boolean published,
+  OffsetDateTime published,
   OffsetDateTime created,
   OffsetDateTime updated
 ) implements EntryBuilder.With { }

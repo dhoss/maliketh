@@ -24,8 +24,9 @@ public class EntryController {
 
   // TODO: pagination
   @GetMapping("")
-  public HttpEntity<Set<Entry>> all() {
-    return ResponseEntity.ok(entryService.all());
+  public HttpEntity<EntryContainer> all() {
+    return ResponseEntity.ok(
+      EntryContainerBuilder.builder().entries(entryService.all()).build());
   }
 
   @PostMapping("")

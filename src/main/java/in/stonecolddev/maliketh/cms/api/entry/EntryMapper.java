@@ -22,6 +22,7 @@ public class EntryMapper {
     var created = rs.getTimestamp("entry_created");
     var updated = rs.getTimestamp("entry_updated");
 
+    // TODO: move timestamp null check + conversion to its own method
     if (created != null) {
       entry.created(created.toInstant().atOffset(ZoneOffset.UTC));
     }
@@ -33,7 +34,10 @@ public class EntryMapper {
       TypeBuilder.builder()
         .name(rs.getString("entry_type"))
         .build());
-    entry.published(rs.getBoolean("published"));
+    var published = rs.getTimestamp("published");
+    if (published != null) {
+      entry.published(published.toInstant().atOffset(ZoneOffset.UTC));
+    }
     entry.slug(rs.getString("entry_slug"));
     //(String[])rs.getArray("tags").getArray();
     var tags = new HashSet<String>();
