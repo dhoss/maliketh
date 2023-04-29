@@ -12,6 +12,10 @@ import java.util.Set;
 public interface EntryRepository extends Repository<Entry, Integer> {
 
 
+  @Query("select count(*) from entries")
+  Integer count();
+
+
   @Modifying
   @Query(
     """
@@ -51,7 +55,6 @@ public interface EntryRepository extends Repository<Entry, Integer> {
     @Param("published") OffsetDateTime published
   );
 
-  // TODO: paginate
   @Query(value = """
                   select
                    e.id as "entry_id",
@@ -71,9 +74,13 @@ public interface EntryRepository extends Repository<Entry, Integer> {
                  left join categories c on e.categories_id = c.id
                  left join entry_types et on e.entry_types_id = et.id
                  left join users u on e.users_id = u.id
+                 where e.id > :last_seen
+                 limit :page_size
                  """,
     resultSetExtractorClass = EntryResultSet.class)
-  Set<Entry> all();
+  Set<Entry> all(
+    @Param("last_seen") Integer lastSeen,
+    @Param("page_size") Integer pageSize);
 
   @Query(value = """
                   select

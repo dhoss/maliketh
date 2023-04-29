@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -22,11 +23,12 @@ public class EntryController {
   }
 
 
-  // TODO: pagination
   @GetMapping("")
-  public HttpEntity<EntryContainer> all() {
+  public HttpEntity<EntryContainer> all(@RequestParam Optional<Integer> page) {
     return ResponseEntity.ok(
-      EntryContainerBuilder.builder().entries(entryService.all()).build());
+      EntryContainerBuilder.builder()
+        .entries(entryService.all(page.orElseGet(() -> 1)))
+        .build());
   }
 
   @PostMapping("")

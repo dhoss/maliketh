@@ -37,9 +37,14 @@ public class EntryService {
     this.slug = Slugify.builder().build();
   }
 
-  // TODO: pagination
-  public Set<Entry> all() {
-    return entryRepository.all();
+  public Set<Entry> all(Integer page) {
+    // TODO: move page size to config
+    var pageSize = 50;
+    // TODO: cache this
+    //var totalRecords = entryRepository.count();
+
+    var offset = (page - 1) * pageSize;
+    return entryRepository.all(offset, pageSize);
   }
 
   public Entry create(Entry entry) {
