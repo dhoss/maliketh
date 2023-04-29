@@ -1,0 +1,1 @@
+psql -Upostgres maliketh < insert-test-data.sql
