@@ -53,16 +53,17 @@ public interface EntryRepository extends Repository<Entry, Integer> {
   // TODO: paginate
   @Query(value = """
                   select
-                   e.id,
+                   e.id as "entry_id",
                    e.body,
                    c.name as "category_name",
-                   e.created,
+                   c.slug as "category_slug",
+                   e.created as "entry_created",
+                   e.updated as "entry_updated",
                    et.name as "entry_type",
                    e.published,
-                   e.slug,
+                   e.slug as "entry_slug",
                    e.tags,
                    e.title,
-                   e.updated,
                    u.user_name,
                    e.version
                  from entries e
@@ -75,9 +76,10 @@ public interface EntryRepository extends Repository<Entry, Integer> {
 
   @Query(value = """
                   select
-                   e.id,
+                   e.id as "entry_id",
                    e.body,
                    c.name as "category_name",
+                   c.slug as "category_slug",
                    e.created,
                    et.name as "entry_type",
                    e.published,

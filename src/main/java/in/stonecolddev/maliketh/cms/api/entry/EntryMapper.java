@@ -1,11 +1,9 @@
 package in.stonecolddev.maliketh.cms.api.entry;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 
 public class EntryMapper {
