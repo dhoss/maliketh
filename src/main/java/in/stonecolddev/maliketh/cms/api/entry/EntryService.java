@@ -28,7 +28,6 @@ public class EntryService {
     UserRepository userRepository,
     CategoryRepository categoryRepository
   ) {
-
     this.entryRepository = entryRepository;
     this.entryTypeRepository = entryTypeRepository;
     this.userRepository = userRepository;
@@ -41,9 +40,13 @@ public class EntryService {
     // TODO: move page size to config
     var pageSize = 50;
     // TODO: cache this
-    //var totalRecords = entryRepository.count();
+    var totalRecords = entryRepository.count();
 
     var offset = (page - 1) * pageSize;
+    if (offset >= totalRecords) {
+      offset = totalRecords - pageSize;
+    }
+
     return entryRepository.all(offset, pageSize);
   }
 

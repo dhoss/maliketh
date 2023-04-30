@@ -22,7 +22,6 @@ public class EntryController {
     this.entryService = entryService;
   }
 
-
   @GetMapping("")
   public HttpEntity<EntryContainer> all(@RequestParam Optional<Integer> page) {
     return ResponseEntity.ok(
