@@ -75,6 +75,7 @@ public interface EntryRepository extends Repository<Entry, Integer> {
                  left join entry_types et on e.entry_types_id = et.id
                  left join users u on e.users_id = u.id
                  where e.id > :last_seen
+                 order by published desc
                  limit :page_size
                  """,
     resultSetExtractorClass = EntryResultSet.class)

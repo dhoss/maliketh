@@ -35,7 +35,7 @@ public interface CategoryRepository extends CrudRepository<Entry,Integer> {
                   group by c.id, e.id, et.id, u.id
                   limit 1
                   """,
-          resultSetExtractorClass = EntryResultSet.class)// CategoryResultSet.class)
+          resultSetExtractorClass = EntryResultSet.class)
   Set<Entry> categoryEntries(@Param("slug") String slug);
 
   @Query("select * from category where slug=:slug limit 1")

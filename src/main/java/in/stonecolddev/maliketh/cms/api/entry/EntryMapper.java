@@ -1,10 +1,7 @@
 package in.stonecolddev.maliketh.cms.api.entry;
 
-import in.stonecolddev.maliketh.cms.api.util.ResultSetUtils;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -25,23 +22,24 @@ public class EntryMapper {
 
     var created = rs.getTimestamp("entry_created");
     var updated = rs.getTimestamp("entry_updated");
+    var published = rs.getTimestamp("published");
 
     if (created != null) {
       entry.created(timeStampToDateTime(created));
     }
+
     if (updated != null) {
       entry.updated(timeStampToDateTime(updated));
+    }
+
+    if (published != null) {
+      entry.published(timeStampToDateTime(published));
     }
 
     entry.type(
       TypeBuilder.builder()
         .name(rs.getString("entry_type"))
         .build());
-
-    var published = rs.getTimestamp("published");
-    if (published != null) {
-      entry.published(timeStampToDateTime(published));
-    }
 
     entry.slug(rs.getString("entry_slug"));
 

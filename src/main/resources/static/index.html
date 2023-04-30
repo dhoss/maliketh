@@ -15,7 +15,7 @@
         function page() {
           var p = parseInt(
             (new URL(document.location)).searchParams.get("page")
-           );
+          );
           return(isNaN(p)) ? 1 : p;
         }
     </script>
