@@ -2,6 +2,7 @@ package in.stonecolddev.maliketh.cms.api.entry;
 
 import com.github.slugify.Slugify;
 import in.stonecolddev.maliketh.cms.api.user.UserRepository;
+import in.stonecolddev.maliketh.cms.configuration.CmsConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,23 +23,26 @@ public class EntryService {
 
   private final Slugify slug;
 
+  private final CmsConfiguration cmsConfiguration;
+
   public EntryService(
     EntryRepository entryRepository,
     EntryTypeRepository entryTypeRepository,
     UserRepository userRepository,
-    CategoryRepository categoryRepository
+    CategoryRepository categoryRepository,
+    CmsConfiguration cmsConfiguration
   ) {
     this.entryRepository = entryRepository;
     this.entryTypeRepository = entryTypeRepository;
     this.userRepository = userRepository;
     this.categoryRepository = categoryRepository;
+    this.cmsConfiguration = cmsConfiguration;
 
     this.slug = Slugify.builder().build();
   }
 
   public Set<Entry> all(Integer page) {
-    // TODO: move page size to config
-    var pageSize = 50;
+    var pageSize = cmsConfiguration.pageSize();
     // TODO: cache this
     var totalRecords = entryRepository.count();
 

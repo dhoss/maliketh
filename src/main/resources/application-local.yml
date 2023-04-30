@@ -15,3 +15,6 @@ logging:
   level:
     in.stonecolddev: DEBUG
     org.springframework.jdbc.core: TRACE
+
+cms:
+  pageSize: 10
