@@ -1,0 +1,23 @@
+{% extends "fragments/layout" %}
+{% block body %}
+<div hx-ext="client-side-templates">
+    <div class="leftcolumn"
+         hx-get="/api/entries"
+         hx-vals='js:{page: page()}'
+         hx-trigger="load"
+         hx-swap="innerHTML"
+         hx-target="#entries"
+         nunjucks-template="entry">
+        <div id="entries"></div>
+    </div>
+    <template id="entry">
+        {% for entry in entries %}
+        <div class="card">
+            <h2>{{ entry.title }}</h2>
+            <h5>posted in {{ entry.category.name }} by {{ entry.author.name }} on {{ entry.published }}</h5>
+            <p>{{ entry.body }}</p>
+        </div>
+        {% endfor %}
+    </template>
+</div>
+{% endblock %}

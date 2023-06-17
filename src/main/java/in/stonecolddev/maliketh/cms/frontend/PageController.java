@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -15,14 +16,22 @@ public class PageController {
 
   @GetMapping("/")
   public String home(Model model) {
-    log.debug("**** INSIDE HOME");
- //   model.addAllAttributes(
- //     Map.of( "site",
- //       Map.of(
- //       "pageTitle", "maliketh cms",
- //       "description", "maliketh cms description",
- //         "header", "maliketh header")));
+    model.addAllAttributes(
+      Map.of(
+        "site",
+        Map.of(
+        "pageTitle", "maliketh cms",
+        "description", "maliketh cms description",
+          "header", "maliketh header"),
+        "entries",
+        List.of(
+          Map.of(
+            "title", "test title",
+            "body", "test body"
+          )
+        )
+        ));
 
-    return "layout";
+    return "home";
   }
 }

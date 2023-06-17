@@ -93,6 +93,6 @@ public class EntryService {
 
   // TODO: move this to category service
   public Set<Entry> findCategory(String slug) {
-    return categoryRepository.categoryEntries(slug);//.orElseThrow();
+    return categoryRepository.categoryEntries(slug);
   }
 }
