@@ -15,7 +15,6 @@ public interface EntryRepository extends Repository<Entry, Integer> {
   @Query("select count(*) from entries")
   Integer count();
 
-
   @Modifying
   @Query(
     """

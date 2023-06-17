@@ -18,5 +18,8 @@ logging:
 
 cms:
   pageSize: 10
+cache:
+  cacheExpireAfterWrite: 1
+  cacheMaxSize: 10_000
 pebble:
   suffix: .html
