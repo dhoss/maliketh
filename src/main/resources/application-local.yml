@@ -18,3 +18,5 @@ logging:
 
 cms:
   pageSize: 10
+pebble:
+  suffix: .html
