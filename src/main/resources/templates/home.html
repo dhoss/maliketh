@@ -12,13 +12,13 @@
     </div>
     <template id="entry">
         {% verbatim %}
-        {% for entry in entries %}
-        <div class="card">
-            <h2>{{ entry.title }}</h2>
-            <h5>posted in {{ entry.category.name }} by {{ entry.author.name }} on {{ entry.published }}</h5>
-            <p>{{ entry.body }}</p>
-        </div>
-        {% endfor %}
+            {% for entry in entries %}
+            <div class="card">
+                <h2>{{ entry.title }}</h2>
+                <h5>posted in {{ entry.category.name }} by {{ entry.author.name }} on {{ entry.published }}</h5>
+                <p>{{ entry.body }}</p>
+            </div>
+            {% endfor %}
         {% endverbatim %}
     </template>
 </div>
