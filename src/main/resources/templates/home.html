@@ -11,6 +11,7 @@
         <div id="entries"></div>
     </div>
     <template id="entry">
+        {% verbatim %}
         {% for entry in entries %}
         <div class="card">
             <h2>{{ entry.title }}</h2>
@@ -18,6 +19,7 @@
             <p>{{ entry.body }}</p>
         </div>
         {% endfor %}
+        {% endverbatim %}
     </template>
 </div>
 {% endblock %}
