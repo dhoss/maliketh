@@ -1,7 +1,6 @@
 package in.stonecolddev.maliketh.cms.api.entry;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.slugify.Slugify;
 import in.stonecolddev.maliketh.cms.api.user.UserRepository;
 import in.stonecolddev.maliketh.cms.configuration.CmsConfiguration;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,17 +57,8 @@ public class EntryService {
   public Set<Entry> all(Integer page) {
     var pageSize = cmsConfiguration.pageSize();
     var totalRecords = entryCountCache.get("entryCount", k -> entryRepository.count());
-
-
     var offset = calculateOffset(pageSize, totalRecords).apply(page);
-   //   (p) -> {
-   //   var o = 0;
-   //   (p - 1) * pageSize;
-   //   if (o >= totalRecords) {
-   //     o = totalRecords - pageSize;
-   //   }
-   //   return o;
-   // };
+
     return new HashSet<>(
       entryCache.getAll(
           entrySlugs(offset, pageSize),
@@ -88,6 +77,7 @@ public class EntryService {
         .skip(offset)
         .limit(pageSize)
         .collect(Collectors.toSet());
+
     if (e.isEmpty()) {
       e = entryRepository.entrySlugs(offset, pageSize);
     }
