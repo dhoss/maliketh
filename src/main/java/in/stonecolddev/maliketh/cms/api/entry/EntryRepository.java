@@ -15,6 +15,16 @@ public interface EntryRepository extends Repository<Entry, Integer> {
   @Query("select count(*) from entries")
   Integer count();
 
+  @Query(
+    """
+    select slug from entries e
+    where e.id > :last_seen
+    order by e.published desc
+    limit :page_size
+    """)
+  Set<String> entrySlugs(
+    @Param("last_seen") Integer lastSeen, @Param("page_size")  Integer pageSize);
+
   @Modifying
   @Query(
     """
@@ -74,7 +84,7 @@ public interface EntryRepository extends Repository<Entry, Integer> {
                  left join entry_types et on e.entry_types_id = et.id
                  left join users u on e.users_id = u.id
                  where e.id > :last_seen
-                 order by published desc
+                 order by e.published desc
                  limit :page_size
                  """,
     resultSetExtractorClass = EntryResultSet.class)
