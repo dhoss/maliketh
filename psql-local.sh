@@ -1,0 +1,1 @@
+psql -Umaliketh -W maliketh

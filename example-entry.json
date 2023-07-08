@@ -1,5 +1,5 @@
 {
-  "title": "test entry 4",
+  "title": "test entry 5",
   "author": {
     "userName": "dja"
   },
@@ -8,8 +8,8 @@
   },
   "body": "test post",
   "category": {
-    "name": "tech"
+    "slug": "tech"
   },
-  "published": false,
+  "published": "2023-07-03T14:37:00-0600",
   "tags": ["test", "entry"]
 }

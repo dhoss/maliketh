@@ -10,4 +10,8 @@ public class ResultSetUtils {
     // TODO: make timezone configurable
     return ts.toInstant().atOffset(ZoneOffset.UTC);
   }
+
+  public static Timestamp dateTimeToTimeStamp(OffsetDateTime dt) {
+    return Timestamp.from(dt.toInstant());
+  }
 }

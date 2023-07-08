@@ -26,7 +26,7 @@ public class EntryController {
   public HttpEntity<EntryContainer> all(@RequestParam Optional<Integer> page) {
     return ResponseEntity.ok(
       EntryContainerBuilder.builder()
-        .entries(entryService.all(page.orElseGet(() -> 1)))
+        .entries(entryService.all(page.orElseGet(() -> 0)))
         .build());
   }
 

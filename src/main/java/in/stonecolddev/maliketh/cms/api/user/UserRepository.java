@@ -21,8 +21,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
    , u.name
    , u.user_name as "userName"
    , u.email
-   , u.created
-   , u.updated
+  -- , u.created
+  -- , u.updated
    from users u
    where u.user_name = :userName
   """)

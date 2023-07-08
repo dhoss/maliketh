@@ -14,7 +14,7 @@ public record Category(
   Integer id,
   String name,
   String slug,
-  Set<Entry> entries,
+  //Set<Entry> entries,
   OffsetDateTime created,
   OffsetDateTime updated
 ) {}

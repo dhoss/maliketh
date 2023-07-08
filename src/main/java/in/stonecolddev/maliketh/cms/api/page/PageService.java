@@ -1,18 +1,18 @@
 package in.stonecolddev.maliketh.cms.api.page;
 
 
-import com.github.benmanes.caffeine.cache.Cache;
+import in.stonecolddev.maliketh.cms.cache.PageFieldCache;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PageService {
 
-  private final Cache<String, PageFieldData> pageFieldCache;
+  private final PageFieldCache pageFieldCache;
 
   private final PageFieldRepository pageFieldRepository;
 
   public PageService(
-    Cache<String, PageFieldData> pageFieldCache,
+    PageFieldCache pageFieldCache,
     PageFieldRepository pageFieldRepository) {
 
     this.pageFieldCache = pageFieldCache;

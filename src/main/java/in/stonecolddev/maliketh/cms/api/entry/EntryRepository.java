@@ -6,6 +6,7 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,12 +19,10 @@ public interface EntryRepository extends Repository<Entry, Integer> {
   @Query(
     """
     select slug from entries e
-    where e.id > :last_seen
+    where e.published is not null
     order by e.published desc
-    limit :page_size
     """)
-  Set<String> entrySlugs(
-    @Param("last_seen") Integer lastSeen, @Param("page_size")  Integer pageSize);
+  List<String> entrySlugs();
 
   @Modifying
   @Query(
@@ -64,6 +63,7 @@ public interface EntryRepository extends Repository<Entry, Integer> {
     @Param("published") OffsetDateTime published
   );
 
+  // TODO: index on order by for entries
   @Query(value = """
                   select
                    e.id as "entry_id",
@@ -83,12 +83,13 @@ public interface EntryRepository extends Repository<Entry, Integer> {
                  left join categories c on e.categories_id = c.id
                  left join entry_types et on e.entry_types_id = et.id
                  left join users u on e.users_id = u.id
-                 where e.id > :last_seen
-                 order by e.published desc
+                 where e.id <= :last_seen
+                 and e.published is not null
+                 order by e.id desc
                  limit :page_size
                  """,
     resultSetExtractorClass = EntryResultSet.class)
-  Set<Entry> all(
+  List<Entry> all(
     @Param("last_seen") Integer lastSeen,
     @Param("page_size") Integer pageSize);
 

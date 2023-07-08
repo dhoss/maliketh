@@ -38,6 +38,6 @@ public interface CategoryRepository extends CrudRepository<Entry,Integer> {
           resultSetExtractorClass = EntryResultSet.class)
   Set<Entry> categoryEntries(@Param("slug") String slug);
 
-  @Query("select * from category where slug=:slug limit 1")
+  @Query("select id, slug, name from categories where slug=:slug limit 1")
   Optional<Category> findBySlug(@Param("slug") String slug);
 }

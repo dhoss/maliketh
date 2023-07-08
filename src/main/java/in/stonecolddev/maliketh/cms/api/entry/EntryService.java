@@ -1,17 +1,18 @@
 package in.stonecolddev.maliketh.cms.api.entry;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.slugify.Slugify;
 import in.stonecolddev.maliketh.cms.api.user.UserRepository;
+import in.stonecolddev.maliketh.cms.cache.EntryCache;
+import in.stonecolddev.maliketh.cms.cache.EntryCountCache;
 import in.stonecolddev.maliketh.cms.configuration.CmsConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class EntryService {
@@ -29,9 +30,9 @@ public class EntryService {
 
   private final CmsConfiguration cmsConfiguration;
 
-  private final Cache<String, Entry> entryCache;
+  private final EntryCache entryCache;
 
-  private final Cache<String, Integer> entryCountCache;
+  private final EntryCountCache entryCountCache;
 
 
   public EntryService(
@@ -40,8 +41,8 @@ public class EntryService {
     UserRepository userRepository,
     CategoryRepository categoryRepository,
     CmsConfiguration cmsConfiguration,
-    Cache<String, Entry> entryCache,
-    Cache<String, Integer> entryCountCache
+    EntryCache entryCache,
+    EntryCountCache entryCountCache
   ) {
     this.entryRepository = entryRepository;
     this.entryTypeRepository = entryTypeRepository;
@@ -54,49 +55,68 @@ public class EntryService {
     this.slug = Slugify.builder().build();
   }
 
-  public Set<Entry> all(Integer page) {
+  // TODO: switch from page to last seen
+  public List<Entry> all(Integer lastSeen) {
     var pageSize = cmsConfiguration.pageSize();
     var totalRecords = entryCountCache.get("entryCount", k -> entryRepository.count());
-    var offset = calculateOffset(pageSize, totalRecords).apply(page);
+    var pointer = (lastSeen == 0) ? totalRecords : lastSeen; //calculateOffset(pageSize, totalRecords).apply(lastSeen);
 
-    return new HashSet<>(
-      entryCache.getAll(
-          entrySlugs(offset, pageSize),
-          // TODO: entryCache.getAll is effectively throwing away first argument
-          //   consider adjusting `entryRepository.all(...)` to take a list of slugs to retrieve
-        (s) -> entryRepository.all(offset, pageSize)
-                 .stream()
-                 .collect(Collectors.toMap(Entry::slug, Function.identity())))
-        .values());
+    // page 1  -> totalRecords - pageSize
+    // page 2 -> lastSeen - pageSize
+
+    log.debug("**** LAST SEEN {}", lastSeen);
+    log.debug("**** OFFSET {}", pointer);
+    log.debug("**** TOTAL RECORDS {}", totalRecords);
+    log.debug("**** PAGE SIZE {}", pageSize);
+
+    log.debug("**** ENTRIES FROM CACHE:");
+
+    List<Entry> entries = entryCache.getAll(
+      () -> {
+        var m = new HashMap<String, Entry>();
+        List<Entry> all = entryRepository.all(pointer, pageSize);
+        log.debug("**** ALL {}", all);
+        for (var e : all) {
+          log.debug("**** ENTRY {}", e);
+          m.put(e.slug(), e);
+        }
+        return m;
+      }).values().stream().sorted(Comparator.comparing(Entry::published).reversed()).toList();
+
+
+    log.debug("**** ENTRIES FROM DB:");
+    log.debug("{}", entries);
+
+    return
+      entries;
   }
 
-  private Set<String> entrySlugs(Integer offset, Integer pageSize) {
-    var e = entryCache.asMap()
-        .keySet()
-        .stream()
-        .skip(offset)
-        .limit(pageSize)
-        .collect(Collectors.toSet());
+ // private List<String> entrySlugs() {
+ //   var e = new ArrayList<>(entryCache.asMap().keySet());
 
-    if (e.isEmpty()) {
-      e = entryRepository.entrySlugs(offset, pageSize);
-    }
+ //   if (e.isEmpty()) {
+ //     e.addAll(entryRepository.entrySlugs());
+ //   }
 
-    return e;
-  }
+ //   return e;
+ // }
 
-  private static Function<Integer, Integer> calculateOffset(
-    Integer pageSize, Integer totalRecords) {
+ // private static Function<Integer, Integer> calculateOffset(
+ //   Integer pageSize, Integer totalRecords) {
 
-    return (Integer p) -> {
-      var o = (p - 1) * pageSize;
-      if (o >= totalRecords) {
-        o = totalRecords - pageSize;
-      }
-      return o;
-    };
+ //   return (Integer p) -> {
+ //     if (p == 1) {
+ //       return totalRecords;
+ //     }
 
-  }
+ //     var o = //(p - 1) * pageSize;
+ //     if (o >= totalRecords) {
+ //       o = totalRecords - pageSize;
+ //     }
+ //     return o;
+ //   };
+
+ // }
 
   public Entry create(Entry entry) {
     log.info("Creating new entry: {}", entry);
@@ -113,24 +133,26 @@ public class EntryService {
     //  })
     //  .build(key -> createExpensiveGraph(key));
 
+
+    var entryTitleSlug = slug.slugify(entry.title());
     entryRepository.insert(
       entry.title(),
       entry.body(),
-      slug.slugify(entry.title()),
+      entryTitleSlug,
       userRepository.findByUserName(entry.author().userName())
         .map(User::id)
-        .orElseThrow(),
-      1,
+        .orElseThrow(() -> new RuntimeException("No such user %s".formatted(entry.author().userName()))),
+      1, // TODO: implement versioning for entries
       entryTypeRepository.findByName(entry.type().name())
         .map(Type::id)
-        .orElseThrow(),
+        .orElseThrow(() -> new RuntimeException("No entry type of %s found".formatted(entry.type().name()))),
       entry.tags().toArray(String[]::new),
-      categoryRepository.findBySlug(entry.category().name())
+      categoryRepository.findBySlug(entry.category().slug())
         .map(Category::id)
-        .orElseThrow(),
+        .orElseThrow(() -> new RuntimeException("No category named %s found".formatted(entry.category().slug()))),
       entry.published());
 
-    entryCache.invalidateAll();
+    entryCache.put(entryTitleSlug, entry);
 
     return entry;
   }
