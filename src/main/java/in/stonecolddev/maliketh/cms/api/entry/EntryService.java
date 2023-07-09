@@ -58,6 +58,7 @@ public class EntryService {
 
   public List<Entry> all(Integer lastSeen) {
     // TODO: get pagination with caching working
+    //  possibly something like Map(pageNumber -> entries)
     return
       entryCache.getAll(
         () -> {
