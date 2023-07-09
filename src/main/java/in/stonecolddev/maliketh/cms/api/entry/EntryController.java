@@ -23,10 +23,10 @@ public class EntryController {
   }
 
   @GetMapping("")
-  public HttpEntity<EntryContainer> all(@RequestParam Optional<Integer> page) {
+  public HttpEntity<EntryContainer> all(@RequestParam Optional<Integer> lastSeen) {
     return ResponseEntity.ok(
       EntryContainerBuilder.builder()
-        .entries(entryService.all(page.orElseGet(() -> 0)))
+        .entries(entryService.all(lastSeen.orElseGet(() -> 0)))
         .build());
   }
 

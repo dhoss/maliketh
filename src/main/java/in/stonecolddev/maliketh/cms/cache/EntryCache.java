@@ -4,5 +4,4 @@ import in.stonecolddev.maliketh.cms.api.entry.Entry;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EntryCache extends DefaultCache<String, Entry> {
-}
+public class EntryCache extends DefaultCache<String, Entry> {}

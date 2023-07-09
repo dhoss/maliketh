@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 @Service
 public class EntryService {
@@ -55,83 +56,27 @@ public class EntryService {
     this.slug = Slugify.builder().build();
   }
 
-  // TODO: switch from page to last seen
   public List<Entry> all(Integer lastSeen) {
-    var pageSize = cmsConfiguration.pageSize();
-    var totalRecords = entryCountCache.get("entryCount", k -> entryRepository.count());
-    var pointer = (lastSeen == 0) ? totalRecords : lastSeen; //calculateOffset(pageSize, totalRecords).apply(lastSeen);
-
-    // page 1  -> totalRecords - pageSize
-    // page 2 -> lastSeen - pageSize
-
-    log.debug("**** LAST SEEN {}", lastSeen);
-    log.debug("**** OFFSET {}", pointer);
-    log.debug("**** TOTAL RECORDS {}", totalRecords);
-    log.debug("**** PAGE SIZE {}", pageSize);
-
-    log.debug("**** ENTRIES FROM CACHE:");
-
-    List<Entry> entries = entryCache.getAll(
-      () -> {
-        var m = new HashMap<String, Entry>();
-        List<Entry> all = entryRepository.all(pointer, pageSize);
-        log.debug("**** ALL {}", all);
-        for (var e : all) {
-          log.debug("**** ENTRY {}", e);
-          m.put(e.slug(), e);
-        }
-        return m;
-      }).values().stream().sorted(Comparator.comparing(Entry::published).reversed()).toList();
-
-
-    log.debug("**** ENTRIES FROM DB:");
-    log.debug("{}", entries);
-
+    // TODO: get pagination with caching working
     return
-      entries;
+      entryCache.getAll(
+        () -> {
+          var m = new HashMap<String, Entry>();
+          for (var e : entryRepository.all(
+            (lastSeen == 0) ? entryCountCache.get("entryCount", k -> entryRepository.count())
+                            : lastSeen, cmsConfiguration.pageSize())) {
+            m.put(e.slug(), e);
+          }
+          return m;
+        }).values()
+          .stream()
+          .sorted(Comparator.comparing(Entry::published).reversed())
+          .toList();
   }
-
- // private List<String> entrySlugs() {
- //   var e = new ArrayList<>(entryCache.asMap().keySet());
-
- //   if (e.isEmpty()) {
- //     e.addAll(entryRepository.entrySlugs());
- //   }
-
- //   return e;
- // }
-
- // private static Function<Integer, Integer> calculateOffset(
- //   Integer pageSize, Integer totalRecords) {
-
- //   return (Integer p) -> {
- //     if (p == 1) {
- //       return totalRecords;
- //     }
-
- //     var o = //(p - 1) * pageSize;
- //     if (o >= totalRecords) {
- //       o = totalRecords - pageSize;
- //     }
- //     return o;
- //   };
-
- // }
 
   public Entry create(Entry entry) {
     log.info("Creating new entry: {}", entry);
     // TODO: implement cache write through
-    //   https://github.com/ben-manes/caffeine/wiki/Writer
-    //   LoadingCache<Key, Graph> graphs = Caffeine.newBuilder()
-    //  .writer(new CacheWriter<Key, Graph>() {
-    //    @Override public void write(Key key, Graph graph) {
-    //      // write to storage or secondary cache
-    //    }
-    //    @Override public void delete(Key key, Graph graph, RemovalCause cause) {
-    //      // delete from storage or secondary cache
-    //    }
-    //  })
-    //  .build(key -> createExpensiveGraph(key));
 
 
     var entryTitleSlug = slug.slugify(entry.title());
