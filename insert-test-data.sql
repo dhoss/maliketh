@@ -8,19 +8,21 @@ insert into
 select
     md5(random() :: text),
     md5(random() :: text),
-    now()
+    now() + (random() * (interval '90 days')) + '30 days'
 from
     generate_series(1, 100) s(i);
 
 insert into entry_types(name, created)
-values ('post', now()),
-('page', now());
+values ('post', now() + (random() * (interval '90 days')) + '30 days'),
+('page', now() + (random() * (interval '90 days')) + '30 days')
+on conflict do nothing;
 
 select * from entry_types;
 
 
 insert into users(email, name, user_name, created)
-values('devin.austin@gmail.com', 'devin', 'dja', now());
+values('devin.austin@gmail.com', 'devin', 'dja', now())
+on conflict do nothing;
 
 
 insert into
@@ -38,9 +40,9 @@ insert into
 select
     'test body ' || s,
     (select id from categories order by random() limit 1),
-    now(),
+    now() + (random() * (interval '90 days')),
     (select id from entry_types where name='post'),
-     now(),
+     now() + (random() * (interval '90 days')),
     'test-title-' || s,
     '{"test", "post"}',
     'test title ' || s,

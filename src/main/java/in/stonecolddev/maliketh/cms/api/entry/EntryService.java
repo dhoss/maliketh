@@ -7,16 +7,17 @@ import in.stonecolddev.maliketh.cms.cache.EntryCountCache;
 import in.stonecolddev.maliketh.cms.configuration.CmsConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 @Service
-public class EntryService {
+public class EntryService implements InitializingBean {
   private final Logger log = LoggerFactory.getLogger(EntryService.class);
 
   private final EntryRepository entryRepository;
@@ -59,26 +60,39 @@ public class EntryService {
   public List<Entry> all(Integer lastSeen) {
     // TODO: get pagination with caching working
     //  possibly something like Map(pageNumber -> entries)
-    return
-      entryCache.getAll(
-        () -> {
-          var m = new HashMap<String, Entry>();
-          for (var e : entryRepository.all(
-            (lastSeen == 0) ? entryCountCache.get("entryCount", k -> entryRepository.count())
-                            : lastSeen, cmsConfiguration.pageSize())) {
-            m.put(e.slug(), e);
-          }
-          return m;
-        }).values()
-          .stream()
-          .sorted(Comparator.comparing(Entry::published).reversed())
-          .toList();
+    var pageSize = cmsConfiguration.pageSize();
+    log.debug("**** PAGE SIZE {}", pageSize);
+    log.debug("**** LAST SEEN {}", lastSeen);
+    //.subList(lastSeen, pageSize);
+    return entryCache.getAll()
+             .values()
+             .stream()
+             .toList()
+             .subList(lastSeen, lastSeen + pageSize);
+  }
+
+  @Override
+  public void afterPropertiesSet() {
+    // cache the first 10k entries, after that who knows
+    log.info("Loading entries post startup");
+    entryCache.getAll(
+      () -> {
+        var m = new HashMap<OffsetDateTime, Entry>();
+        log.debug("**** MIN {}", OffsetDateTime.MIN);
+
+        for (var e : entryRepository.all(OffsetDateTime.MIN, 10_000)) {
+          log.info("Caching entry {} -> {}", e.published(), e.id());
+          //log.info("Caching entry {} -> {}", e.slug(), e.id());
+          m.put(e.published(), e);
+          //m.put(e.slug(), e);
+        }
+        return m;
+      });
   }
 
   public Entry create(Entry entry) {
     log.info("Creating new entry: {}", entry);
     // TODO: implement cache write through
-
 
     var entryTitleSlug = slug.slugify(entry.title());
     entryRepository.insert(
@@ -98,7 +112,8 @@ public class EntryService {
         .orElseThrow(() -> new RuntimeException("No category named %s found".formatted(entry.category().slug()))),
       entry.published());
 
-    entryCache.put(entryTitleSlug, entry);
+    entryCache.put(entry.published(), entry);
+    //entryCache.put(entryTitleSlug, entry);
 
     return entry;
   }

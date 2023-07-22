@@ -12,9 +12,9 @@
     <script src="https://unpkg.com/htmx.org/dist/ext/client-side-templates.js"></script>
     <script src="https://unpkg.com/nunjucks@3.2.3/browser/nunjucks.js"></script>
     <script>
-        function page() {
+        function lastSeen() {
           var p = parseInt(
-            (new URL(document.location)).searchParams.get("page")
+            (new URL(document.location)).searchParams.get("lastSeen")
           );
           return(isNaN(p)) ? 0 : p;
         }

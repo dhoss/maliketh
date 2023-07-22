@@ -83,14 +83,14 @@ public interface EntryRepository extends Repository<Entry, Integer> {
                  left join categories c on e.categories_id = c.id
                  left join entry_types et on e.entry_types_id = et.id
                  left join users u on e.users_id = u.id
-                 where e.id <= :last_seen
+                 where e.published >= :last_seen
                  and e.published is not null
-                 order by e.id desc
+                 order by e.published desc
                  limit :page_size
                  """,
     resultSetExtractorClass = EntryResultSet.class)
   List<Entry> all(
-    @Param("last_seen") Integer lastSeen,
+    @Param("last_seen") OffsetDateTime lastSeen,
     @Param("page_size") Integer pageSize);
 
   @Query(value = """
