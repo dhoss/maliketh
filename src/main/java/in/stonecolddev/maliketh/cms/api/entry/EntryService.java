@@ -3,7 +3,6 @@ package in.stonecolddev.maliketh.cms.api.entry;
 import com.github.slugify.Slugify;
 import in.stonecolddev.maliketh.cms.api.user.UserRepository;
 import in.stonecolddev.maliketh.cms.cache.EntryCache;
-import in.stonecolddev.maliketh.cms.cache.EntryCountCache;
 import in.stonecolddev.maliketh.cms.configuration.CmsConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -34,8 +32,6 @@ public class EntryService implements InitializingBean {
 
   private final EntryCache entryCache;
 
-  private final EntryCountCache entryCountCache;
-
 
   public EntryService(
     EntryRepository entryRepository,
@@ -43,8 +39,7 @@ public class EntryService implements InitializingBean {
     UserRepository userRepository,
     CategoryRepository categoryRepository,
     CmsConfiguration cmsConfiguration,
-    EntryCache entryCache,
-    EntryCountCache entryCountCache
+    EntryCache entryCache
   ) {
     this.entryRepository = entryRepository;
     this.entryTypeRepository = entryTypeRepository;
@@ -52,18 +47,11 @@ public class EntryService implements InitializingBean {
     this.categoryRepository = categoryRepository;
     this.cmsConfiguration = cmsConfiguration;
     this.entryCache = entryCache;
-    this.entryCountCache = entryCountCache;
-
     this.slug = Slugify.builder().build();
   }
 
   public List<Entry> all(Integer lastSeen) {
-    // TODO: get pagination with caching working
-    //  possibly something like Map(pageNumber -> entries)
     var pageSize = cmsConfiguration.pageSize();
-    log.debug("**** PAGE SIZE {}", pageSize);
-    log.debug("**** LAST SEEN {}", lastSeen);
-    //.subList(lastSeen, pageSize);
     return entryCache.getAll()
              .values()
              .stream()
@@ -78,13 +66,10 @@ public class EntryService implements InitializingBean {
     entryCache.getAll(
       () -> {
         var m = new HashMap<OffsetDateTime, Entry>();
-        log.debug("**** MIN {}", OffsetDateTime.MIN);
-
+        // TODO: eventually we probably want the number of entries loaded on startup configurable
         for (var e : entryRepository.all(OffsetDateTime.MIN, 10_000)) {
           log.info("Caching entry {} -> {}", e.published(), e.id());
-          //log.info("Caching entry {} -> {}", e.slug(), e.id());
           m.put(e.published(), e);
-          //m.put(e.slug(), e);
         }
         return m;
       });
@@ -113,7 +98,6 @@ public class EntryService implements InitializingBean {
       entry.published());
 
     entryCache.put(entry.published(), entry);
-    //entryCache.put(entryTitleSlug, entry);
 
     return entry;
   }

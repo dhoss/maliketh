@@ -12,4 +12,3 @@ public class EntryCache extends DefaultCache<OffsetDateTime, Entry> {
     super(Comparator.reverseOrder());
   }
 }
-//public class EntryCache extends DefaultCache<String, Entry> {}
