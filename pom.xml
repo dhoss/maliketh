@@ -129,9 +129,9 @@
 				<version>0.8.10</version>
 				<configuration>
 					<excludes>
-						<exclude>com/helio/maliketh/configuration/**/*</exclude>
-						<exclude>com/helio/maliketh/**/*Builder*.class</exclude>
-						<exclude>com/helio/maliketh/MalikethApplication.class</exclude>
+						<exclude>in/stonecolddev/maliketh/configuration/**/*</exclude>
+						<exclude>in/stonecolddev/maliketh/**/*Builder*.class</exclude>
+						<exclude>in/stonecolddev/maliketh/MalikethApplication.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
